@@ -1,3 +1,4 @@
+from pydoc import classname
 import dash
 from dash import html, dcc, Input, Output
 import pandas as pd
@@ -8,14 +9,19 @@ import os
 
 app = dash.Dash(__name__)
 server = app.server
-#----------------------------------------------------------------------------------
+#--------------------------------DATABASE CONNECTIVITY--------------------------------------------------
 
 con = sqlite3.connect('./data/moody2022_new.db', check_same_thread=False)
 df = pd.read_sql_query("SELECT * FROM moody2022_new", con)
 
-#----------------------------------------------------------------------------------
+#----------------------------------APP LAYOUT------------------------------------------------
 
 app.layout = html.Div([
+    
+    html.Div([
+        html.H4("Dashboard")
+    ], className = 'header', ),
+
     html.Div([
         dcc.Input(
         id = 'my_txt_input',
@@ -23,9 +29,10 @@ app.layout = html.Div([
         name = 'text',
         debounce = True,
         placeholder="SELECT * FROM moody2022_new;",
-        style = {'width' : '100%', 'height': 100, 'align':'center', 'align-items':'center', 'justify-content': 'center'}
+        style = {'border-radius': '5px', 'background-color': '#f0fff0', 'width' : '100%', 'height': 100, 
+                'align':'center', 'align-items':'center', 'justify-content': 'center'}
     )
-    ],style = dict(width = '100%', display='flex', justifyContent='center')),
+    ]),
 
     html.Br(),
     html.Div([
@@ -38,19 +45,19 @@ app.layout = html.Div([
             },
             value  = 'Median',
             inline = True,
-            style = {'color' : 'white'}
+            style = {'color' : '#060225'}
         )
     ], style = dict(width = '100%', justifyContent = 'center')),
     html.Br(),
     html.Div([
         dcc.Graph(
         id= 'div_output',
-        style = {'width' : '100%', 'align':'center'}
+        style = {'width' : '100%', 'align':'center', 'border-radius': '5px'}
     )
-    ], style = dict(width = '100%', display='flex', justifyContent='center'))
-])
+    ])
+], style = dict(fontfamily = 'Consolas', backgroundcolor = 'rgb(225, 220, 220)', color = 'rgb(8, 1, 68)', fontsize = '2.5em'))
 
-#----------------------------------------------------------------------------------
+#-------------------------------------CALLBACKS-----------------------------------------------------------
 
 @app.callback(
     Output('div_output', 'figure'),
